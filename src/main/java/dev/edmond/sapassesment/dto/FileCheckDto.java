@@ -1,5 +1,11 @@
 package dev.edmond.sapassesment.dto;
 
-@Get
-public class EmailCheckDto {
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class FileCheckDto {
+
+    private String filePath;
 }
