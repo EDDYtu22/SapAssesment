@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Text File Manipulation App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            margin-bottom: 5px;
+        }
+        label {
+
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 5%;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            width: 400px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        button[type="reset"] {
+            background-color: red;
+        }
+        .button-container {
+            text-align: left;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        /* Add styles for the message div */
+        .message-container {
+            display: none;
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            padding: 5px;
+            margin-bottom: 30px;
+            width: 400px;
+
+        }
+    </style>
+</head>
+<body>
+<h1>Text File Manipulation App</h1>
+
+
+<form action="/loadFile" method="post">
+    <label for="filePath">Enter File Path:</label>
+    <input type="text" id="filePath" name="filePath" required>
+    <button type="submit" id="checkFileButton">Check file</button>
+</form>
+
+<div class="message-container" id="fileValidationResponseMessage">
+</div>
+
+<form action="/api/file/switch-lines" method="post">
+    <label for="firstLineIndex">1st Line Index:</label>
+    <input type="number" id="firstLineIndex" name="firstLineIndex" required>
+    <br>
+    <label for="secondLineIndex">2nd Line Index:</label>
+    <input type="number" id="secondLineIndex" name="secondLineIndex" required>
+
+
+    <div class="button-container">
+        <button type="submit" id="switchLinesButton">Switch Lines</button>
+        <button type="reset" id="resetSwitchLinesFields">Clear</button>
+    </div>
+</form>
+
+<div class="message-container" id="lineSwitchResponseMessage">
+</div>
+
+<form action="/switchWords" method="post">
+    <label for="firstLineIndexWord">1st Line Index:</label>
+    <input type="number" id="firstLineIndexWord" name="firstLineIndexWord" required>
+    <br>
+    <label for="firstLineWordIndex">1st Line Word Index:</label>
+    <input type="number" id="firstLineWordIndex" name="firstLineWordIndex" required>
+    <br>
+    <label for="secondLineIndexWord">2nd Line Index:</label>
+    <input type="number" id="secondLineIndexWord" name="secondLineIndexWord" required>
+    <br>
+    <label for="secondLineWordIndex">2nd Line Word Index:</label>
+    <input type="number" id="secondLineWordIndex" name="secondLineWordIndex" required>
+
+    <div class="button-container">
+        <button type="submit" id="switchWordsButton">Switch Words</button>
+        <button type="reset" id="resetSwitchWordsFields">Clear</button>
+    </div>
+</form>
+
+<div class="message-container" id="wordSwitchResponseMessage">
+</div>
+
+<script>
+    const checkFileButton = document.getElementById('checkFileButton');
+    const fileValidationResponseMessage = document.getElementById('fileValidationResponseMessage');
+
+    checkFileButton.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const requestData = {
+            filePath: document.getElementById('filePath').value
+        };
+
+        const response = await fetch('/api/file/check-file', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+        });
+
+        const responseData = await response.text();
+        if (response.ok) {
+            fileValidationResponseMessage.style.background = 'lightgreen';
+        } else {
+            fileValidationResponseMessage.style.background = 'red';
+        }
+        fileValidationResponseMessage.innerHTML = responseData;
+        fileValidationResponseMessage.style.display = 'block';
+
+        setTimeout(() => {
+            fileValidationResponseMessage.style.display = 'none';
+        }, 2500);
+
+    });
+</script>
+
+<script>
+    const switchLinesButton = document.getElementById('switchLinesButton');
+    const lineSwitchResponseMessage = document.getElementById('lineSwitchResponseMessage');
+
+    switchLinesButton.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const requestData = {
+            filePath: document.getElementById('filePath').value,
+            firstLineIndex: document.getElementById('firstLineIndex').value,
+            secondLineIndex: document.getElementById('secondLineIndex').value
+        };
+
+        const response = await fetch('/api/file/switch-lines', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+        });
+
+        const responseData = await response.text();
+        if (responseData === 'Lines switched successfully') {
+            lineSwitchResponseMessage.style.background = 'lightgreen';
+        } else {
+            lineSwitchResponseMessage.style.background = 'red';
+        }
+        lineSwitchResponseMessage.innerHTML = responseData;
+        lineSwitchResponseMessage.style.display = 'block';
+
+
+        setTimeout(() => {
+            lineSwitchResponseMessage.style.display = 'none';
+        }, 2500);
+
+    });
+</script>
+
+<script>
+    const switchWordsButton = document.getElementById('switchWordsButton');
+    const wordSwitchResponseMessage = document.getElementById('wordSwitchResponseMessage');
+
+    switchWordsButton.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const requestData = {
+            filePath: document.getElementById('filePath').value,
+            firstLineIndex: document.getElementById('firstLineIndexWord').value,
+            secondLineIndex: document.getElementById('secondLineIndexWord').value,
+            firstLineWordIndex: document.getElementById('firstLineWordIndex').value,
+            secondLineWordIndex: document.getElementById('secondLineWordIndex').value
+        };
+
+        const response = await fetch('/api/file/switch-words', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+        });
+
+        const responseData = await response.text();
+        if (responseData === 'Words switched successfully') {
+            wordSwitchResponseMessage.style.background = 'lightgreen';
+        } else {
+            wordSwitchResponseMessage.style.background = 'red';
+        }
+        wordSwitchResponseMessage.innerHTML = responseData;
+        wordSwitchResponseMessage.style.display = 'block';
+
+
+        setTimeout(() => {
+            wordSwitchResponseMessage.style.display = 'none';
+        }, 2500);
+
+    });
+</script>
+<script>
+    const resetSwitchLinesFieldsButton = document.getElementById('resetSwitchLinesFields');
+    resetSwitchLinesFieldsButton.addEventListener('click', () => {
+        document.getElementById('firstLineIndex').value = '';
+        document.getElementById('secondLineIndex').value = '';
+    });
+</script>
+
+<script>
+    const resetSwitchWordsFieldsButton = document.getElementById('resetSwitchWordsFields');
+    resetSwitchWordsFieldsButton.addEventListener('click', () => {
+        document.getElementById('firstLineIndexWord').value = '';
+        document.getElementById('firstLineWordIndex').value = '';
+        document.getElementById('secondLineIndexWord').value = '';
+        document.getElementById('secondLineWordIndex').value = '';
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
