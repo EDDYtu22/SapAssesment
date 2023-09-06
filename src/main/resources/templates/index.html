@@ -1,10 +1,353 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Text File Manipulation App</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            margin: 20px;-->
+<!--        }-->
+<!--        h1 {-->
+<!--            text-align: center;-->
+<!--        }-->
+<!--        form {-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+<!--        label {-->
+<!--            /*display: block;*/-->
+<!--            margin-bottom: 5px;-->
+<!--        }-->
+<!--        input[type="number"] {-->
+<!--            width: 5%;-->
+<!--            padding: 5px;-->
+<!--            margin-bottom: 10px;-->
+<!--        }-->
+<!--        input[type="text"] {-->
+<!--            width: 400px;-->
+
+<!--        }-->
+<!--        button {-->
+<!--            background-color: #007bff;-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            padding: 10px 20px;-->
+<!--            cursor: pointer;-->
+
+<!--        }-->
+<!--        .button-container {-->
+<!--            text-align: left;-->
+<!--        }-->
+<!--        button:hover {-->
+<!--            background-color: #0056b3;-->
+
+<!--        }-->
+<!--        ul {-->
+<!--            list-style-type: none;-->
+<!--            padding: 0;-->
+<!--        }-->
+
+<!--        li {-->
+<!--            margin-bottom: 10px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Text File Manipulation</h1>-->
+
+<!--&lt;!&ndash; Input bar for file path &ndash;&gt;-->
+<!--<form action="/loadFile" method="post">-->
+<!--    <label for="filePath">Enter File Path:</label>-->
+<!--    <input type="text" id="filePath" name="filePath" required>-->
+<!--    <button type="submit">Check file</button>-->
+<!--</form>-->
+
+<!--<form action="/switchLines" method="post">-->
+<!--    <label for="firstLineIndex">1st Line Index:</label>-->
+<!--    <input type="number" id="firstLineIndex" name="firstLineIndex" required>-->
+<!--    <br>-->
+<!--    <label for="secondLineIndex">2nd Line Index:</label>-->
+<!--    <input type="number" id="secondLineIndex" name="secondLineIndex" required>-->
+
+<!--    &lt;!&ndash; Center-align buttons within a div &ndash;&gt;-->
+<!--    <div class="button-container">-->
+<!--        <button type="submit">Switch Lines</button>-->
+<!--    </div>-->
+<!--</form>-->
+
+<!--<form action="/switchWords" method="post">-->
+<!--    <label for="firstLineIndexWord">1st Line Index:</label>-->
+<!--    <input type="number" id="firstLineIndexWord" name="firstLineIndexWord" required>-->
+<!--    <br>-->
+<!--    <label for="firstLineWordIndex">1st Line Word Index:</label>-->
+<!--    <input type="number" id="firstLineWordIndex" name="firstLineWordIndex" required>-->
+<!--    <br>-->
+<!--    <label for="secondLineIndexWord">2nd Line Index:</label>-->
+<!--    <input type="number" id="secondLineIndexWord" name="secondLineIndexWord" required>-->
+<!--    <br>-->
+<!--    <label for="secondLineWordIndex">2nd Line Word Index:</label>-->
+<!--    <input type="number" id="secondLineWordIndex" name="secondLineWordIndex" required>-->
+
+<!--    &lt;!&ndash; Center-align buttons within a div &ndash;&gt;-->
+<!--    <div class="button-container">-->
+<!--        <button type="submit">Switch Words</button>-->
+<!--    </div>-->
+<!--</form>-->
+
+<!--&lt;!&ndash; Display the current content of the text file &ndash;&gt;-->
+<!--<ul>-->
+<!--    &lt;!&ndash; You can use Thymeleaf to iterate through lines and display them here &ndash;&gt;-->
+<!--    &lt;!&ndash; For example: &ndash;&gt;-->
+<!--    &lt;!&ndash;-->
+<!--    <li>-->
+<!--        Line 1: This is the content of line 1.-->
+<!--    </li>-->
+<!--    <li>-->
+<!--        Line 2: This is the content of line 2.-->
+<!--    </li>-->
+<!--    &ndash;&gt;-->
+<!--</ul>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Text File Manipulation App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            margin-bottom: 5px;
+        }
+        label {
+            /*display: block;*/
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 5%;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            width: 400px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .button-container {
+            text-align: left;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        /* Add styles for the message div */
+        .message-container {
+            display: none;
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            padding: 5px;
+            margin-bottom: 30px;
+            margin-left: 117px;
+            width: auto;
+
+        }
+    </style>
 </head>
 <body>
-$END$
-</body>
-</html>
+<h1>Text File Manipulation</h1>
+
+<!-- Input bar for file path -->
+<form action="/loadFile" method="post">
+    <label for="filePath">Enter File Path:</label>
+    <input type="text" id="filePath" name="filePath" required>
+    <button type="submit" id="checkFileButton">Check file</button>
+</form>
+
+<!-- Message container for response -->
+<div class="message-container" id="fileValidationResponseMessage">
+    <!-- Response message will be displayed here -->
+</div>
+
+<form action="/api/file/switch-lines" method="post">
+    <label for="firstLineIndex">1st Line Index:</label>
+    <input type="number" id="firstLineIndex" name="firstLineIndex" required>
+    <br>
+    <label for="secondLineIndex">2nd Line Index:</label>
+    <input type="number" id="secondLineIndex" name="secondLineIndex" required>
+
+    <!-- Center-align buttons within a div -->
+    <div class="button-container">
+        <button type="submit" id="switchLinesButton">Switch Lines</button>
+    </div>
+</form>
+
+<div class="message-container" id="lineSwitchResponseMessage">
+    <!-- Response message will be displayed here -->
+</div>
+
+<form action="/switchWords" method="post">
+    <label for="firstLineIndexWord">1st Line Index:</label>
+    <input type="number" id="firstLineIndexWord" name="firstLineIndexWord" required>
+    <br>
+    <label for="firstLineWordIndex">1st Line Word Index:</label>
+    <input type="number" id="firstLineWordIndex" name="firstLineWordIndex" required>
+    <br>
+    <label for="secondLineIndexWord">2nd Line Index:</label>
+    <input type="number" id="secondLineIndexWord" name="secondLineIndexWord" required>
+    <br>
+    <label for="secondLineWordIndex">2nd Line Word Index:</label>
+    <input type="number" id="secondLineWordIndex" name="secondLineWordIndex" required>
+
+    <!-- Center-align buttons within a div -->
+    <div class="button-container">
+        <button type="switchWordsButton" id="switchWordsButton">Switch Words</button>
+    </div>
+</form>
+
+<div class="message-container" id="wordSwitchResponseMessage">
+    <!-- Response message will be displayed here -->
+</div>
+
+<!-- Display the current content of the text file -->
+<ul>
+    <!-- You can use Thymeleaf to iterate through lines and display them here -->
+    <!-- For example: -->
+    <!--
+    <li>
+        Line 1: This is the content of line 1.
+    </li>
+    <li>
+        Line 2: This is the content of line 2.
+    </li>
+    -->
+</ul>
+
+<script>
+    // JavaScript to show/hide the response message based on server response
+    const checkFileButton = document.getElementById('checkFileButton');
+    const fileValidationResponseMessage = document.getElementById('fileValidationResponseMessage');
+
+    checkFileButton.addEventListener('click', async (e) => {
+        e.preventDefault(); // Prevent the form from submitting
+
+        // Send an AJAX request to check the file and get the response
+        const requestData = {
+            filePath: document.getElementById('filePath').value
+        };
+
+        const response = await fetch('/api/file/check-file', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+        });
+
+        const responseData = await response.text();
+        if (responseData === 'Valid File!') {
+            fileValidationResponseMessage.style.background = 'lightgreen';
+        } else {
+            fileValidationResponseMessage.style.background = 'red';
+        }
+        fileValidationResponseMessage.innerHTML = responseData;
+        fileValidationResponseMessage.style.display = 'block'; // Show the message
+
+    });
+</script>
+
+<script>
+    // JavaScript to show/hide the response message based on server response
+    const switchLinesButton = document.getElementById('switchLinesButton');
+    const lineSwitchResponseMessage = document.getElementById('lineSwitchResponseMessage');
+
+    switchLinesButton.addEventListener('click', async (e) => {
+        e.preventDefault(); // Prevent the form from submitting
+
+        // Send an AJAX request to check the file and get the response
+        const requestData = {
+            filePath: document.getElementById('filePath').value,
+            firstLineIndex: document.getElementById('firstLineIndex').value,
+            secondLineIndex: document.getElementById('secondLineIndex').value
+        };
+
+        const response = await fetch('/api/file/switch-lines', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+        });
+
+        const responseData = await response.text();
+        if (responseData === 'Lines switched successfully') {
+            lineSwitchResponseMessage.style.background = 'lightgreen';
+        } else {
+            lineSwitchResponseMessage.style.background = 'red';
+        }
+        lineSwitchResponseMessage.innerHTML = responseData;
+        lineSwitchResponseMessage.style.display = 'block'; // Show the message
+
+    });
+</script>
+
+<script>
+    // JavaScript to show/hide the response message based on server response
+    const switchWordsButton = document.getElementById('switchWordsButton');
+    const wordSwitchResponseMessage = document.getElementById('wordSwitchResponseMessage');
+
+    switchWordsButton.addEventListener('click', async (e) => {
+        e.preventDefault(); // Prevent the form from submitting
+
+        // Send an AJAX request to check the file and get the response
+        const requestData = {
+            filePath: document.getElementById('filePath').value,
+            firstLineIndex: document.getElementById('firstLineIndexWord').value,
+            secondLineIndex: document.getElementById('secondLineIndexWord').value,
+            firstLineWordIndex: document.getElementById('firstLineWordIndex').value,
+            secondLineWordIndex: document.getElementById('secondLineWordIndex').value
+        };
+
+        const response = await fetch('/api/file/switch-words', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+        });
+
+        const responseData = await response.text();
+        if (responseData === 'Words switched successfully') {
+            wordSwitchResponseMessage.style.background = 'lightgreen';
+        } else {
+            wordSwitchResponseMessage.style.background = 'red';
+        }
+        wordSwitchResponseMessage.innerHTML = responseData;
+        wordSwitchResponseMessage.style.display = 'block'; // Show the message
+
+    });
+</script>
+
+
+
+
+
+
