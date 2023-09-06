@@ -58,6 +58,7 @@ public class FileService {
                 writer.newLine();
             }
         } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
         }
 
         return "Lines switched successfully";
